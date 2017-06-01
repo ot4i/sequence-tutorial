@@ -2,7 +2,7 @@
     "version": "0.1",
     "pageContent": 
 	{
-        "_comments": "KAFKA object that contains data for page labels, buttons, etc.",
+        "_comments": "",
         "navItems": 
 		{
             "_common": 
@@ -32,8 +32,8 @@
 	{
         "_common": 
 		{
-            "name": "Using the Aggregation nodes in a message flow, with MQ transport to a backend service",
-            "shortDescription": "Learn how to use the Aggregation nodes to fan-out and fan-in messages over MQ.",
+            "name": "Using the Sequence node in a message flow, to insert a sequence number in a message",
+            "shortDescription": "Learn how to use the Sequence node to inject sequence numbers in to message data as it goes through a message flow.",
             "durationText": "This tutorial takes approximately",
             "durationTime": "5 minutes",
             "_resourceToOpenComment": "The ID of the first resource to open when the user imports the tutorial. Resource IDs are defined in the repo_metadata.json Tutorials listing on ot4i.",
@@ -51,7 +51,7 @@
             "topicList": 
 			[
                 {
-                    "title": "Aggregation nodes"
+                    "title": "Sequence node"
                 }
             ],
             "outcomesName": "Learning outcomes",
@@ -59,7 +59,7 @@
             "outcomeList": 
 			[
                 {
-                    "title": "Use IBM Integration Bus to fan-out requests over MQ and aggregate their responses."
+                    "title": "Use IBM Integration Bus to insert sequence numbers into messages."
                 }
             ],
             "summary": 
@@ -69,13 +69,13 @@
                 "sections": 
 				[
                     {
-                        "section": "This tutorial demonstrates a simple message flow that receives an MQ message, and fans-out two separate MQ request messages (after simple transformations using a Mapping node). Two separate example back-end message flows are provided which read these MQ requests and reply to a common response queue. Finally, a separate fan-in message flow aggregates the two response messages."
+                        "section": "This tutorial demonstrates a simple message flow that receives an HTTP message containing a set of employee records in a CSV format. The request body is line feed separated, with one row for each employee. Each row uses commas to separate the fields. The flow uses a Sequence node to insert a sequence number into each row. At the end of the message flow, all the data rows are added to an output file."
                     },
                     {
                         "section": "This tutorial requires an IIB node which is associated with a local queue manager."
                     },
                     {
-                        "section": "In IBM Integration Bus, an application is a container for all the resources that are required to create a solution. This tutorial provides three applications - one to hold the fan-out and fan-in aggregation flows, and two other applications for the back-end MQ flows."
+                        "section": "In IBM Integration Bus, an application is a container for deployed resources such as message flows. This tutorial provides a single application, holding one message flow, and which references a shared library containing a DFDL message model which describes the CSV data format expected by the flow."
                     }
                 ]
             },
@@ -106,23 +106,20 @@
                     "sections": 
 					[
                         {
-                            "section": "When you click Import, two applications will be created in your workspace: <span class='application'>KafkaProducerApplication</span> and <span class='application'>KafkaConsumerApplication</span>."
+                            "section": "When you click Import, one application and one shared library will be created in your workspace:"
                         },
                         {
-                            "section": "<span class='application'>KafkaProducerApplication</span> provides a single message flow with a HTTPInput, KafkaProducer and HTTPReply nodes." 
+                            "section": "The application <span class='application'>Sequence</span> contains a message flow also named <span class='application'>Sequence</span>." 
                         },
                         {
-                            "section": "<span class='application'>KafkaConsumerApplication</span> provides a single message flow with a KafkaConsumer and FileOutput nodes."
+                            "section": "The shared library <span class='application'>CommaSeparatedValues</span> contains a DFDL model file named <span class='application'>csv.xsd</span>."
                         },
-			{
-			    "section": "In this tutorial, these two applications will run in the same integration server. With additional configuration they can run on different servers or even on different machines."
+                        {
+                            "section": "The message flow receives an HTTP message containing a set of employee records in a CSV format. The request body is line feed separated with one row for each employee. The HTTPInput node parses the input message. The Compute node then loops over the rows and propagates them one after another to the Sequence node, which inserts a sequence number into each row before the FileOutput node writes the records to an output file. To complete the flow, a summary message stating that processing is complete is returned to the requestor by the HTTPReply node."
                         },
-			{
-			    "section": "This tutorial can be run against any stand alone Apache Kafka server (https://kafka.apache.org/) at version 0.10.0.1 or above. The IBM Bluemix Message Hub service provides an easy to use cloud based Kafka implementation which you can use with this tutorial if you don't have your own Kafka server available."
-			},
-			{
-			    "section": "Once you import the tutorial, you will see red crosses against the two Kafka applications. This is because a few setup steps (mandatory properties) are required to complete the configuration of the Kafka nodes. These are explained when you move onto the Prepare tab."
-			}
+			            {
+			                "section": "Once you import the tutorial, the provided application is almost ready to be deployed and tested. However, before you do this, read the Prepare tab which describes preparing your deploy environment."
+			            }
                     ]
                 },
                 "helpLinks": 
@@ -154,65 +151,60 @@
                 "overview": 
 				{
                     "name": "Prepare",
-                    "heading": "Imported projects",
+                    "heading": "Prepare to deploy",
                     "_prepareComment": "A description of what just happened when the user clicked Import, and what will happen when the user clicks Deploy.",
                     "sections": 
 		     [
-                        {
-                            "section": "Before you can deploy the flows there are some setup steps that need to be completed.",
-                            "steps": 
-			    {
-                                "type": "ordered",
-                                "details": 
-				[
+                {
+                     "section":"The message flow in this tutorial uses a sequence node, which uses MQ storage queues to hold information about the state of in-flight messages. The storage queues are owned by the queue manager that is associated with the integration node. If you have already associated your integration node with a queue manager (for example by using the -q property of the <code><span class='cmdname'>mqsicreatebroker</span></code> command) then you do not need to follow the first two steps below.",
+                     "steps":{
+                        "type":"ordered",
+                        "details":[
+                           {
+                              "details":"Create the default IBM Integration Bus queues in WebSphere MQ by completing the following steps:",
+                              "substeps":{
+                                 "type":"ordered",
+                                 "details":[
                                     {
-                                        "details": "Within your own Apache Kafka server, e.g. IBM Bluemix Message Hub Service, record the Bootstrap server name. Create a topic if you don't already have one and remember its name ready for step 3."
+                                       "details":"Open the IBM Integration Console."
                                     },
                                     {
-                                        "details": "If you are using Message Hub, the connection from IIB must be secured using SASL_SSL. Open the Message Hub Service Credentials and remember the user and password ready for step 5. "
+                                       "details":"In the console window, type the following command:<br><code>server\\sample\\wmq\\iib_createqueues <span class='varname'>qmgr</span></code><br>where <span class='varname'>qmgr</span> is the queue manager name."
+                                    }
+                                 ]
+                              }
+                           },
+                           {
+                              "details":"Associate the default integration node with the queue manager by completing the following steps:",
+                              "substeps":{
+                                 "type":"ordered",
+                                 "details":[
+                                    {
+                                       "details":"In the console window, stop the default integration node by typing the following command:<br><code><span class='cmdname'>mqsistop</span> -i <span class='varname'>TESTNODE_userid</span></code>"
                                     },
                                     {
-                                        "details": "Open message flows <span class='application'>KafkaProducerFlow.msgflow</span> and <span class='application'>KafkaConsumerFlow.msgflow</span>.  Make the following changes to the Kafka nodes.",
-                                        "substeps":{
-                                        "type": "ordered",
-                                        "details": 
-					[
-                                          {
-                                            "details": "Topic name*  set this to the one that you created on your Kafka server."
-                                          },
-                                          {
-                                            "details": "Bootstrap servers*  set this to the one listed in the Credentials above."
-                                          },                   
-                                          {
-                                            "details": "If using Message Hub, switch to the Security tab and set the Security protocol to be \"SASL_SSL\" and leave the default value for SSL protocol to be \"TLSv1.2\". "
-                                          }                   
-                                        ]
-                                      }
-				                    },
-				                    {
-                                        "details": "Within the <span class='application'>KafkaConsumerFlow.msgflow</span> you will also need to change the File Output node, Directory and File name."
-				                    },
-				                    {
-                                        "details": "If you are using IBM Bluemix Message hub or if your Kafka Server needs to authenticate the connection from IIB, then you will need to issue the following command from the IIB Command Console.",
-                                    "substeps":{
-                                    "type": "unordered",
-                                    "details": 
-								    [
-                                        {
-                                          "details": "mqsisetdbparms <span class='varname'>integrationNodeName</span> -n kafka::KAFKA::<span class='varname'>integrationServerName</span> -u <span class='varname'>user</span> -p <span class='varname'>password</span>"
-                                        },  
-                                        {
-                                          "details": "Restart the Integration Node."
-                                        }
-                                      ]
-                                      }
-				                    }
-                                ]
-                            }
-                        },
-                    			{
-			        "section": "You are now ready to exercise the flows. To exercise the flows move onto the Run tab."
-		    	}
+                                       "details":"Associate the queue manager with the default integration node, <span class='varname'>TESTNODE_userid</span> by typing the following command:<br><code><span class='cmdname'>mqsichangebroker</span> <span class='varname'>TESTNODE_userid</span> -q <span class='varname'>qmgr</span></code><br>where<br><span class='varname'>qmgr</span> is the queue manager name"
+                                    },
+                                    {
+                                       "details":"Start the default integration node by typing the following command:<br><code><span class='cmdname'>mqsistart</span> <span class='varname'>TESTNODE_userid</span></code>"
+                                    }
+                                 ]
+                              }
+                           },
+                           {
+                              "details":"Create the output directory:",
+                              "substeps":{
+                                 "type":"ordered",
+                                 "details":[
+                                    {
+                                       "details":"The FileOutput node's Basic property tab includes a <span class='varname'>Directory</span> property which specifies where the output file should be written. This has been set to <span class='varname'>C:\\IIB_Sequence_Tutorial_Output</span> but you can change this to a value of your own choice. Create the directory on the file system of the machine where your runtime node resides."
+                                    }
+                                 ]
+                              }
+                           }
+                        ]
+                     }
+                  }
              ]
                 },
                 "helpLinks": 
@@ -224,35 +216,20 @@
                 "overview": 
 				{
                     "name": "Run",
-                    "heading": "Follow these steps to complete the tutorial",
+                    "heading": "",
                     "_runComment": "The full steps for the user to run through the tutorial. Use 'sections' to render paragraphs, 'steps' with a type of 'ordered' or 'unordered' to render HTML lists, and 'substeps' to render nested lists.",
-                    "sections": 
-					[
-                        {
-                            "section": "Use the Flow Exerciser in the <span class='resource'>KafkaProducerFlow.msgflow</span> and <span class='resource'>KafkaConsumerFlow.msgflow</span> to run this tutorial.",
-                            "steps": 
-							{
-                                "type": "ordered",
-                                "details": 
-								[
+                "sections":[
+                            {
+                                "section": "<h4>Use the Flow Exerciser to test the tutorial scenario",
+                                "steps": {
+                                    "type": "ordered",
+                                    "details": [
                                     {
-                                        "details": "Open <span class='resource'>KafkaConsumerFlow.msgflow</span>.",
-                                    "substeps":{
-                                    "type": "unordered",
-                                    "details": 
-								    [
-                                        {
-                                          "details": "Click the Flow Exerciser icon <img src='http://ot4i.github.io/ot4i.tutorials//dist/images/icons/iib/startFlowExerciser.png' alt='' /> to start testing the flow"
-                                        }
-                                      ]
-                                      }
-                                    },
-                                    {
-                                        "details": "Open <span class='resource'>KafkaProducerFlow.msgflow</span>.",
-                                    "substeps":{
-                                    "type": "unordered",
-                                    "details": 
-								    [
+                                        "details": "Open <span class='resource'>Sequence.msgflow</span>.",
+                                        "substeps":{
+                                        "type": "unordered",
+                                        "details": 
+								        [
                                         {
                                           "details": "Click the Flow Exerciser icon <img src='http://ot4i.github.io/ot4i.tutorials//dist/images/icons/iib/startFlowExerciser.png' alt='' /> to start testing the flow"
                                         },
@@ -260,25 +237,25 @@
                                             "details": "Click the Send Message icon <img src='http://ot4i.github.io/ot4i.tutorials/dist/images/icons/iib/sendMessage.png' alt='' />."
                                         },
                                         {
-                                            "details": "Create a new message and click Send. Your message is sent to the HTTP input node."
-				        },
-				        {
-                                            "details": "When the list of actions is shown, click on the Received HTTP reply message... item to show the output from the flow. This wil be the same as the message that you sent in."
-				        }
-                                      ]
-                                      }
-                                    },
-				    {
-                                        "details": "After you close the dialog, the path taken through the messageflow is highlighted. Click on the message icon on each connection to see how the tree is updated by each node."
-				    },
-				    {
-                                        "details": "Go to the output directory that you specified on the FileOutput node and you should see a file that contains the message that you sent in."
-					}
+                                            "details": "Select the saved message which has been provided, named <span class='resource'>InputMessage</span>, and click Send. The message will be sent to the HTTPInput node."
+                				        },
+				                        {
+                                            "details": "The pop-up dialog will show the message has been sent and a response received stating <span class='resource'>Processing complete- each row has been given a sequence number and written to the output file.</span>"
+				                        },
+                    				    {
+                                            "details": "After you close the dialog, the paths taken through the messageflow are highlighted. Click on the message icon on each connection to see how the tree has been updated by each node."
+				                        },
+                    				    {
+                                            "details": "Finally, locate the output file in the directory which you configured on the earlier Prepare step). You will see that the output file has had sequence numbers inserted at the end of each row of data:<br><span class='resource'>Department01,Smith,Robert,Brandon,1988-03-24,1<br>Department01,Johnson,John,Martin,1986-01-23,2<br>Department01,Jones,Arya,Cat,1986-02-19,3<br>Department01,Bonham,John,Henry,1948-05-31,4<br>Department01,Walters,Amanda,Louise,1966-08-01,5</span>"
+				                        }
+                                        ]
+                                        }
+                                    }
                                 ]
                             }
                         },
 			{
-			    "section": "This tutorial showed the KafkaConsumer and KafkaProducer nodes running in the same integration server. Remember if you experiment with other topologies you may need to run the mqsisetdbparms command accordingly, as the credentials for the Kafka nodes are scoped to the integration server."
+			    "section": "This tutorial has shown the Sequence node inserting sequence numbers into messages passing through a message flow."
 			}
                     ]
                 },
@@ -289,8 +266,8 @@
 					[
                         {
                             "title": "Knowledge Center link to ",
-                            "description": "Developing integration solutions by using applications",
-                            "link": "com.ibm.etools.mft.doc/bi12002_.htm"
+                            "description": "Sequence node",
+                            "link": "com.ibm.etools.mft.doc/bc28010_.htm"
                         },
                         {
                             "title": "Knowledge Center link to ",
