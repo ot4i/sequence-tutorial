@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+ 
+	
+<!-- header::Start -->
+	<head>
+		<!-- Use Internet Explorer 9 Standards mode for Eclipse Browser Control - https://www.eclipse.org/swt/faq.php#browsernativeie and https://msdn.microsoft.com/en-us/library/jj676915%28v=vs.85%29.aspx -->
+  		<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+		
+		<!-- Next 2 http=equiv headers required to disable caching the Eclipse Browser Widget -->
+		<meta http-equiv="Pragma" content="no-cache">
+  		<meta http-equiv="Expires" content="-1">
+
+		<meta charset="UTF-8"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<meta name="copyright" content="Copyright IBM Corporation 2014" />
+		<meta name="abstract" content="IBM Integration Bus V10 Tutorial">
+		<meta name="author" content="IBM">
+		<meta name="description" content="IBM Integration Bus V10 Tutorial">
+		<meta name="keywords" content="keywords" > 
+		<meta name="robots" content="index,follow">
+		<meta name="source" content="IBM Integration Bus V10 Tutorial" /> 
+		
+		<title>IBM Integration Bus V10 Tutorial</title>
+
+    	<link rel="stylesheet" href="https://ot4i.github.io/iib-tutorials/css/main.css" />
+		<link rel="stylesheet" href="https://ot4i.github.io/iib-tutorials/css/app.css" />
+    	
+		<script src="https://ot4i.github.io/iib-tutorials/js/json2.js"></script>
+		<script src="https://ot4i.github.io/iib-tutorials/js/js2java.js"></script>
+		<script src="https://ot4i.github.io/iib-tutorials/js/js2java_steps.js"></script>
+		<script src="https://ot4i.github.io/iib-tutorials/js/vendor/modernizr.js"></script>
+	</head>
+<!-- header::End -->
+<!-- body::Start -->
+		<body>
+  	<!-- body content here -->
+	<div class="row">
+	  <div class="small-12 medium-12 large-12 columns">
+	    <p> </p>
+	  </div>
+	</div>
+	<div class="row">
+	  <div class="small-9 medium-9 large-9 columns">
+	    <h4 class="title">Using the Sequence node in a message flow, to insert a sequence number in a message <action><button class="small radius button" tabindex="0" id="stepsViewDetails" onclick="viewDetails()"> View Details</button> </action></h4>
+	  </div>
+	  <div class="small-3 medium-3 large-3 columns">
+		<a href="javascript:;" onclick="openHelpSystem('/com.ibm.etools.msgbroker.helphome.doc/help_home_msgbroker.htm')" class="small right helplink">IBM Knowledge Center</a> 
+	  </div>
+	</div> 
+	<hr>
+	<div class="row">
+		<div class="small-10 medium-10 large-10 columns">
+		<h5> Learn how to use the Sequence node to inject sequence numbers in to message data as it goes through a message flow. </h5>
+		</div>
+		<div class="small-2 medium-2 large-2 columns">
+			<button class="small radius button right" tabindex="0" id="backToGallery" onclick="backToGallery()"> Back To Gallery
+			</button>
+		</div>
+	</div>
+	<div class="row">          
+		  <div class="small-12 medium-12 large-12 columns">
+			<ul class="tabs vertical"> 
+				<li class="tab-title tab-title-small active">
+				  <a href="javascript:;" onclick="show('panel21')">Create</a> 
+				</li>
+				<li class="tab-title tab-title-small">
+				  <a href="javascript:;" onclick="show('panel31')">Prepare</a> 
+				</li>
+				<li class="tab-title tab-title-small">
+				  <a href="javascript:;" onclick="show('panel41')">Run</a> 
+				</li>
+			</ul>
+			<!-- editing -->
+			<div class="tabs-content panel-thin-blue vertical"> 
+		    	<div class="content active" id="panel21">
+		    		
+		    		<div class="small-10 medium-10 large-10 columns divider">
+					
+				      	<div class="row content-details">
+					      	<h4>Import projects</h4>
+					        
+						    
+								<p> When you click Import, one application and one shared library will be created in your workspace: </p>
+								
+							
+								<p> The application <span class="application">Sequence</span> contains a message flow also named <span class="application">Sequence</span>. </p>
+								
+							
+								<p> The shared library <span class="application">CommaSeparatedValues</span> contains a DFDL model file named <span class="application">csv.xsd</span>. </p>
+								
+							
+								<p> The message flow receives an HTTP message containing a set of employee records in a CSV format. The request body is line feed separated with one row for each employee. The HTTPInput node parses the input message. The Compute node then loops over the rows and propagates them one after another to the Sequence node, which inserts a sequence number into each row before the FileOutput node writes the records to an output file. To complete the flow, a summary message stating that processing is complete is returned to the requestor by the HTTPReply node. </p>
+								
+							
+								<p> Once you import the tutorial, the provided application is almost ready to be deployed and tested. However, before you do this, read the Prepare tab which describes preparing your deploy environment. </p>
+								
+							
+						</div>
+						
+						<div class="row content-details">
+							<h4>Find out more</h4>
+							<ul>
+							
+								
+																
+								<li> <a href="javascript:;" onclick="openHelpSystem('/com.ibm.etools.mft.doc/bi12002_.htm')" title="Knowledge Center link to Developing integration solutions by using applications">Developing integration solutions by using applications</a> </li>
+							   	
+							
+							</ul>
+						</div>
+						
+					</div>
+					
+					<div class="small-2 medium-2 large-2 columns">
+					
+					
+					<h4 class="tkaction"><a href="javascript:;" onclick="importArtifacts(); openResource('MainFlow')"> Import <img class="icon-image" src="https://ot4i.github.io/iib-tutorials/images/icons/ibmdesign/back-right-previous_128-orange.png"></a></h4>
+										
+				    </div>
+					
+		    	</div>
+		    	<div class="content" id="panel31">
+					
+					<div class="small-12 medium-12 large-12 columns">
+					
+						<div class="row content-details">
+						  	<h4>Prepare to deploy</h4>
+						    
+						    
+								<p> The message flow in this tutorial uses a sequence node, which uses MQ storage queues to hold information about the state of in-flight messages. The storage queues are owned by the queue manager that is associated with the integration node. If you have already associated your integration node with a queue manager (for example by using the -q property of the <code><span class="cmdname">mqsicreatebroker</span></code> command) then you do not need to follow the first two steps below. </p>
+								
+								
+									
+									<ol>
+									
+									
+										<li> Create the default IBM Integration Bus queues in WebSphere MQ by completing the following steps:
+										
+										
+											
+											<ol>
+											
+												
+													<li> Open the IBM Integration Console.</li>
+												
+													<li> In the console window, type the following command:<br><code>server\sample\wmq\iib_createqueues <span class="varname">qmgr</span></code><br>where <span class="varname">qmgr</span> is the queue manager name.</li>
+												
+											
+											</ol>
+											
+										
+										</li>
+									
+										<li> Associate the default integration node with the queue manager by completing the following steps:
+										
+										
+											
+											<ol>
+											
+												
+													<li> In the console window, stop the default integration node by typing the following command:<br><code><span class="cmdname">mqsistop</span> -i <span class="varname">TESTNODE_userid</span></code></li>
+												
+													<li> Associate the queue manager with the default integration node, <span class="varname">TESTNODE_userid</span> by typing the following command:<br><code><span class="cmdname">mqsichangebroker</span> <span class="varname">TESTNODE_userid</span> -q <span class="varname">qmgr</span></code><br>where<br><span class="varname">qmgr</span> is the queue manager name</li>
+												
+													<li> Start the default integration node by typing the following command:<br><code><span class="cmdname">mqsistart</span> <span class="varname">TESTNODE_userid</span></code></li>
+												
+											
+											</ol>
+											
+										
+										</li>
+									
+										<li> Create the output directory:
+										
+										
+											
+											<ol>
+											
+												
+													<li> The FileOutput node's Basic property tab includes a <span class="varname">Directory</span> property which specifies where the output file should be written. This has been set to <span class="varname">C:\IIB_Sequence_Tutorial_Output</span> but you can change this to a value of your own choice. Create the directory on the file system of the machine where your runtime node resides.</li>
+												
+											
+											</ol>
+											
+										
+										</li>
+									
+									
+									</ol>
+									
+								
+							
+						</div>
+						
+						<div class="row content-details">
+							<h4></h4>
+							<ul>
+							
+							</ul>
+						</div>
+							
+					</div>
+					
+		    	</div>
+		    	<div class="content" id="panel41">
+		    		
+		    		<div class="small-10 medium-10 large-10 columns divider">
+					
+				    	<div class="row content-details">
+					      	<h4></h4>
+					        
+						    
+								<p> <h4>Use the Flow Exerciser to test the tutorial scenario </h4></p>
+								
+								
+									
+									<ol>
+									
+									
+										<li> Open <span class="resource">Sequence.msgflow</span>.
+										
+										
+											
+											<ul>
+											
+												
+													<li> Click the Flow Exerciser icon <img src="https://ot4i.github.io/ot4i.tutorials//dist/images/icons/iib/startFlowExerciser.png" alt> to start testing the flow</li>
+												
+													<li> Click the Send Message icon <img src="https://ot4i.github.io/ot4i.tutorials/dist/images/icons/iib/sendMessage.png" alt>.</li>
+												
+													<li> Select the saved message which has been provided, named <span class="resource">InputMessage</span>, and click Send. The message will be sent to the HTTPInput node.</li>
+												
+													<li> The pop-up dialog will show the message has been sent and a response received stating <span class="resource">Processing complete- each row has been given a sequence number and written to the output file.</span></li>
+												
+													<li> After you close the dialog, the paths taken through the messageflow are highlighted. Click on the message icon on each connection to see how the tree has been updated by each node.</li>
+												
+													<li> Finally, locate the output file in the directory which you configured on the earlier Prepare step). You will see that the output file has had sequence numbers inserted at the end of each row of data:<br><span class="resource">Department01,Smith,Robert,Brandon,1988-03-24,1<br>Department01,Johnson,John,Martin,1986-01-23,2<br>Department01,Jones,Arya,Cat,1986-02-19,3<br>Department01,Bonham,John,Henry,1948-05-31,4<br>Department01,Walters,Amanda,Louise,1966-08-01,5</span></li>
+												
+											
+											</ul>
+											
+										
+										</li>
+									
+									
+									</ol>
+									
+								
+							
+								<p> This tutorial has shown the Sequence node inserting sequence numbers into messages passing through a message flow. </p>
+								
+							
+						</div>
+						
+						<div class="row content-details"> 	
+							<h4>Find out more</h4>
+							<ul>
+							
+								
+																
+								<li> <a href="javascript:;" onclick="openHelpSystem('/com.ibm.etools.mft.doc/bc28010_.htm')" title="Knowledge Center link to Sequence node">Sequence node</a> </li>
+							   	
+							
+								
+																
+								<li> <a href="javascript:;" onclick="openHelpSystem('/com.ibm.etools.mft.doc/rt26110_.htm')" title="Knowledge Center link to Testing your message flow by using the Flow exerciser">Testing your message flow by using the Flow exerciser</a> </li>
+							   	
+							
+							</ul>
+						</div>
+							
+					</div>
+					
+					<div class="small-2 medium-2 large-2 columns">
+					
+					
+					
+					
+					
+					<h4 class="tkaction"><a href="javascript:;" onclick="cleanUp()" title="Clean up and remove any changes in your workspace made by the tutorial."> Clean Up <img class="icon-image" src="https://ot4i.github.io/iib-tutorials/images/icons/ibmdesign/close-cancel-error_128-red.png"></a></h4>
+				    
+					
+				    </div>
+					
+				</div>	
+			</div> <!-- tab-content -->
+		</div> <!-- columns -->
+	  </div> <!-- row --></body>
+		<script src="https://ot4i.github.io/iib-tutorials/js/vendor/jquery.js"></script>
+		<script src="https://ot4i.github.io/iib-tutorials/js/vendor/foundation.min.js"></script>
+		<script src="https://ot4i.github.io/iib-tutorials/js/main.js"></script>
+	</body>
+<!-- body::End -->
+
+</html>
