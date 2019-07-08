@@ -15,14 +15,14 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 		<meta name="copyright" content="Copyright IBM Corporation 2014" />
-		<meta name="abstract" content="IBM Integration Bus V10 Tutorial">
+		<meta name="abstract" content="IBM App Connect Enterprise V11 Tutorial">
 		<meta name="author" content="IBM">
-		<meta name="description" content="IBM Integration Bus V10 Tutorial">
+		<meta name="description" content="IBM App Connect Enterprise V11 Tutorial">
 		<meta name="keywords" content="keywords" > 
 		<meta name="robots" content="index,follow">
-		<meta name="source" content="IBM Integration Bus V10 Tutorial" /> 
+		<meta name="source" content="IBM App Connect Enterprise V11 Tutorial" /> 
 		
-		<title>IBM Integration Bus V10 Tutorial</title>
+		<title>IBM App Connect Enterprise V11 Tutorial</title>
 
     	<link rel="stylesheet" href="https://ot4i.github.io/iib-tutorials/css/main.css" />
 		<link rel="stylesheet" href="https://ot4i.github.io/iib-tutorials/css/app.css" />
@@ -129,23 +129,23 @@
 						  	<h4>Prepare to deploy</h4>
 						    
 						    
-								<p> The message flow in this tutorial uses a sequence node, which uses MQ storage queues to hold information about the state of in-flight messages. The storage queues are owned by the queue manager that is associated with the integration node. If you have already associated your integration node with a queue manager (for example by using the -q property of the <code><span class="cmdname">mqsicreatebroker</span></code> command) then you do not need to follow the first two steps below. </p>
+								<p> The message flow in this tutorial uses a sequence node, which uses MQ storage queues to hold information about the state of in-flight messages. The storage queues are owned by the queue manager that is associated with the integration node or integration server. The instructions provided below assume the use of an integration node. </p>
 								
 								
 									
 									<ol>
 									
 									
-										<li> Create the default IBM Integration Bus queues in WebSphere MQ by completing the following steps:
+										<li> Create the default App Connect Enterprise queues in IBM MQ by completing the following steps:
 										
 										
 											
 											<ol>
 											
 												
-													<li> Open the IBM Integration Console.</li>
+													<li> Open the IBM App Connect Enterprise Console. If you don't already have one, create and start a queue manager:<br><code><span class="cmdname">crtmqm</span> <span class="varname"> qmgr</span></code><br><code><span class="cmdname">strmqm</span> <span class="varname"> qmgr</span></code></li>
 												
-													<li> In the console window, type the following command:<br><code>server\sample\wmq\iib_createqueues <span class="varname">qmgr</span></code><br>where <span class="varname">qmgr</span> is the queue manager name.</li>
+													<li> Next create the queues by typing the following command:<br><code>server\sample\wmq\iib_createqueues <span class="varname">qmgr</span></code><br>where<br><span class="varname">qmgr</span> is the queue manager name.</li>
 												
 											
 											</ol>
@@ -153,18 +153,18 @@
 										
 										</li>
 									
-										<li> Associate the default integration node with the queue manager by completing the following steps:
+										<li> Create an integration node which is associated with the above queue manager by completing the following steps:
 										
 										
 											
 											<ol>
 											
 												
-													<li> In the console window, stop the default integration node by typing the following command:<br><code><span class="cmdname">mqsistop</span> -i <span class="varname">TESTNODE_userid</span></code></li>
+													<li> In the console window, create an integration node by typing the following command:<br><code><span class="cmdname">mqsicreatebroker</span> <span class="varname">TESTNODE</span> -q <span class="varname">qmgr</span></code></li>
 												
-													<li> Associate the queue manager with the default integration node, <span class="varname">TESTNODE_userid</span> by typing the following command:<br><code><span class="cmdname">mqsichangebroker</span> <span class="varname">TESTNODE_userid</span> -q <span class="varname">qmgr</span></code><br>where<br><span class="varname">qmgr</span> is the queue manager name</li>
+													<li> Start the integration node by typing the following command:<br><code><span class="cmdname">mqsistart</span> <span class="varname">TESTNODE</span></code></li>
 												
-													<li> Start the default integration node by typing the following command:<br><code><span class="cmdname">mqsistart</span> <span class="varname">TESTNODE_userid</span></code></li>
+													<li> Create an integration server associated with the integration node by typing the following command:<br><code><span class="cmdname">mqsicreateexecutiongroup</span> <span class="varname">TESTNODE</span> -e <span class="varname">default</span></code></li>
 												
 											
 											</ol>
@@ -206,7 +206,7 @@
 		    	</div>
 		    	<div class="content" id="panel41">
 		    		
-		    		<div class="small-10 medium-10 large-10 columns divider">
+					<div class="small-12 medium-12 large-12 columns">
 					
 				    	<div class="row content-details">
 					      	<h4></h4>
@@ -272,17 +272,6 @@
 						</div>
 							
 					</div>
-					
-					<div class="small-2 medium-2 large-2 columns">
-					
-					
-					
-					
-					
-					<h4 class="tkaction"><a href="javascript:;" onclick="cleanUp()" title="Clean up and remove any changes in your workspace made by the tutorial."> Clean Up <img class="icon-image" src="https://ot4i.github.io/iib-tutorials/images/icons/ibmdesign/close-cancel-error_128-red.png"></a></h4>
-				    
-					
-				    </div>
 					
 				</div>	
 			</div> <!-- tab-content -->
