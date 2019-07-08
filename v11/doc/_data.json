@@ -59,23 +59,23 @@
             "outcomeList": 
 			[
                 {
-                    "title": "Use IBM Integration Bus to insert sequence numbers into messages."
+                    "title": "Use IBM App Connect Enterprise to insert sequence numbers into messages."
                 }
             ],
             "summary": 
 			{
                 "overviewName": "OVERVIEW",
-                "_overviewComment": "A short description of what happens in this tutorial, and an optional short explanation of the IIB concepts used in this tutorial if necessary for context. What background knowledge must the user have for this to make sense?",
+                "_overviewComment": "A short description of what happens in this tutorial, and an optional short explanation of the ACE concepts used in this tutorial if necessary for context. What background knowledge must the user have for this to make sense?",
                 "sections": 
 				[
                     {
                         "section": "This tutorial demonstrates a simple message flow that receives an HTTP message containing a set of employee records in a CSV format. The request body is line feed separated, with one row for each employee. Each row uses commas to separate the fields. The flow uses a Sequence node to insert a sequence number into each row. At the end of the message flow, all the data rows are added to an output file."
                     },
                     {
-                        "section": "This tutorial requires an IIB node which is associated with a local queue manager."
+                        "section": "This tutorial requires an ACE integration node (or standalone server) which is associated with a local queue manager."
                     },
                     {
-                        "section": "In IBM Integration Bus, an application is a container for deployed resources such as message flows. This tutorial provides a single application, holding one message flow, and which references a shared library containing a DFDL message model which describes the CSV data format expected by the flow."
+                        "section": "In IBM App Connect Enterprise, an application is a container for deployed resources such as message flows. This tutorial provides a single application, holding one message flow, and which references a shared library containing a DFDL message model which describes the CSV data format expected by the flow."
                     }
                 ]
             },
@@ -156,38 +156,39 @@
                     "sections": 
 		     [
                 {
-                     "section":"The message flow in this tutorial uses a sequence node, which uses MQ storage queues to hold information about the state of in-flight messages. The storage queues are owned by the queue manager that is associated with the integration node. If you have already associated your integration node with a queue manager (for example by using the -q property of the <code><span class='cmdname'>mqsicreatebroker</span></code> command) then you do not need to follow the first two steps below.",
+                     "section":"The message flow in this tutorial uses a sequence node, which uses MQ storage queues to hold information about the state of in-flight messages. The storage queues are owned by the queue manager that is associated with the integration node or integration server. The instructions provided below assume the use of an integration node.",
                      "steps":{
                         "type":"ordered",
                         "details":[
                            {
-                              "details":"Create the default IBM Integration Bus queues in WebSphere MQ by completing the following steps:",
+                              "details":"Create the default App Connect Enterprise queues in IBM MQ by completing the following steps:",
                               "substeps":{
                                  "type":"ordered",
                                  "details":[
                                     {
-                                       "details":"Open the IBM Integration Console."
+                                       "details":"Open the IBM App Connect Enterprise Console. If you don't already have one, create and start a queue manager:<br><code><span class='cmdname'>crtmqm</span> <span class='varname'> qmgr</span></code><br><code><span class='cmdname'>strmqm</span> <span class='varname'> qmgr</span></code>"
                                     },
                                     {
-                                       "details":"In the console window, type the following command:<br><code>server\\sample\\wmq\\iib_createqueues <span class='varname'>qmgr</span></code><br>where <span class='varname'>qmgr</span> is the queue manager name."
-                                    }
+                                       "details":"Next create the queues by typing the following command:<br><code>server\\sample\\wmq\\iib_createqueues <span class='varname'>qmgr</span></code><br>where<br><span class='varname'>qmgr</span> is the queue manager name."
+                                    }									
                                  ]
                               }
-                           },
+                           },                           
                            {
-                              "details":"Associate the default integration node with the queue manager by completing the following steps:",
+                              "details":"Create an integration node which is associated with the above queue manager by completing the following steps:",
                               "substeps":{
                                  "type":"ordered",
                                  "details":[
                                     {
-                                       "details":"In the console window, stop the default integration node by typing the following command:<br><code><span class='cmdname'>mqsistop</span> -i <span class='varname'>TESTNODE_userid</span></code>"
+                                       "details":"In the console window, create an integration node by typing the following command:<br><code><span class='cmdname'>mqsicreatebroker</span> <span class='varname'>TESTNODE</span> -q <span class='varname'>qmgr</span></code>"
+                                    },
+									{
+                                       "details":"Start the integration node by typing the following command:<br><code><span class='cmdname'>mqsistart</span> <span class='varname'>TESTNODE</span></code>"
                                     },
                                     {
-                                       "details":"Associate the queue manager with the default integration node, <span class='varname'>TESTNODE_userid</span> by typing the following command:<br><code><span class='cmdname'>mqsichangebroker</span> <span class='varname'>TESTNODE_userid</span> -q <span class='varname'>qmgr</span></code><br>where<br><span class='varname'>qmgr</span> is the queue manager name"
-                                    },
-                                    {
-                                       "details":"Start the default integration node by typing the following command:<br><code><span class='cmdname'>mqsistart</span> <span class='varname'>TESTNODE_userid</span></code>"
+                                       "details":"Create an integration server associated with the integration node by typing the following command:<br><code><span class='cmdname'>mqsicreateexecutiongroup</span> <span class='varname'>TESTNODE</span> -e <span class='varname'>default</span></code>"
                                     }
+
                                  ]
                               }
                            },
@@ -231,10 +232,10 @@
                                         "details": 
 								        [
                                         {
-                                          "details": "Click the Flow Exerciser icon <img src='http://ot4i.github.io/ot4i.tutorials//dist/images/icons/iib/startFlowExerciser.png' alt='' /> to start testing the flow"
+                                          "details": "Click the Flow Exerciser icon <img src='https://ot4i.github.io/ot4i.tutorials//dist/images/icons/iib/startFlowExerciser.png' alt='' /> to start testing the flow"
                                         },
                                         {
-                                            "details": "Click the Send Message icon <img src='http://ot4i.github.io/ot4i.tutorials/dist/images/icons/iib/sendMessage.png' alt='' />."
+                                            "details": "Click the Send Message icon <img src='https://ot4i.github.io/ot4i.tutorials/dist/images/icons/iib/sendMessage.png' alt='' />."
                                         },
                                         {
                                             "details": "Select the saved message which has been provided, named <span class='resource'>InputMessage</span>, and click Send. The message will be sent to the HTTPInput node."
@@ -275,19 +276,7 @@
                             "link": "com.ibm.etools.mft.doc/rt26110_.htm"
                         }
                     ]
-                },
-		"exits": 
-		{
-			"title": "Run Exits",
-			"details": 
-			[
-				{
-					"name": "Clean Up",
-					"description": "Clean up and remove any changes in your workspace made by the tutorial.",
-					"method": "cleanUp()"
-				}
-			]
-		}
+                }
             }
         }
     }
